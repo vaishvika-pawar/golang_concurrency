@@ -6,19 +6,23 @@ import (
 )
 
 func main() {
-	dones := make([]chan bool, 4)
-	//done := make(chan bool)
-	dones[0] = make(chan bool)
-	go greet("Nice to meet you!", dones[0])
-	dones[1] = make(chan bool)
-	go greet("How are you?", dones[1])
-	dones[2] = make(chan bool)
-	go slowGreet("How ... are ... you ... ?", dones[2])
-	dones[3] = make(chan bool)
-	go greet("I hope you're liking the course!", dones[3])
+	//dones := make([]chan bool, 4)
+	done := make(chan bool)
+	//dones[0] = make(chan bool)
+	go greet("Nice to meet you!", done)
+	//dones[1] = make(chan bool)
+	go greet("How are you?", done)
+	//dones[2] = make(chan bool)
+	go slowGreet("How ... are ... you ... ?", done)
+	//dones[3] = make(chan bool)
+	go greet("I hope you're liking the course!", done)
 
-	for _, done := range dones {
-		<-done
+	// for _, done := range dones {
+	// 	<-done
+	// }
+
+	for range done {
+		//fmt.Println(doneChan)
 	}
 	// All functions start after the function before is executed completely
 	// To run then in parallel we add go keyword before the function call
@@ -34,6 +38,10 @@ func slowGreet(phrase string, doneChan chan bool) {
 	time.Sleep(3 * time.Second)
 	fmt.Println("Hello!", phrase)
 	doneChan <- true
+	close(doneChan)
+	// only add this line to the function 
+	// which you know will take longest 
+	// and after which we don not need the channel
 	// <- this operator sends data to channel
 }
 
